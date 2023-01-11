@@ -154,7 +154,7 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: `Positioner`,
         short_name: `Positioner`,
-        description: `Tool for positioning images for WW`,
+        description: `A tool for the image positioning`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

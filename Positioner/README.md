@@ -1,6 +1,6 @@
 # Positioner (positioner)
 
-Tool for positioning images for WW
+A tool for the image positioning
 
 ## Install the dependencies
 ```bash
