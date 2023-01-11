@@ -1,11 +1,15 @@
 <template>
   <canvas ref="canvasElement"></canvas>
+  <h1>
+
+  </h1>
 </template>
 
 <script setup>
 import { useInputStore } from "src/stores/input-store";
 import { useCanvasStore } from "src/stores/canvas-store";
-import { ref, onMounted, watch } from "vue";
+import { useImagesStore } from "src/stores/images-store";
+import { ref, onMounted, watch, computed } from "vue";
 import { getSceneMultiplier } from "src/helpers/resizer";
 import { MIN_CANVAS_PADDING } from "src/constants";
 
@@ -13,6 +17,7 @@ const fabric = require("fabric").fabric;
 
 const inputStore = useInputStore();
 const canvasStore = useCanvasStore();
+const imagesStore = useImagesStore()
 
 const canvasElement = ref();
 
@@ -58,12 +63,22 @@ watch(
   (src) => {
     if (!src || !canvas) return;
 
-    fabric.Image.fromURL(src, (oImg) => canvas.add(oImg));
+    fabric.Image.fromURL(src, (image) => {
+      canvas.add(image)
+
+      image.on('moving', console.log)
+      image.on('scaling', console.log)
+      imagesStore.images.push(image)
+      console.log(image)
+    });
+
+
   }
 );
 
 inputStore.$subscribe(setupCanvas)
 
+const imagesList = computed(() => canvas._objects)
 
 onMounted(() => {
   canvasDimensions = {

@@ -38,8 +38,6 @@ import { useInputStore } from "src/stores/input-store";
 
 const inputStore = useInputStore();
 
-//const { sceneWidth, sceneHeight, startZ } = storeToRefs(inputStore)
-
 const { canvasInput } = storeToRefs(inputStore)
 
 </script>
