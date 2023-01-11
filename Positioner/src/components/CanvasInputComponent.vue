@@ -2,8 +2,7 @@
   <div class="row q-gutter-x-md">
     <div class="col-auto">
       <q-input
-        @update:model-value="onChange"
-        v-model.number="input.width"
+        v-model.number="canvasInput.width"
         type="number"
         filled
         style="max-width: 200px"
@@ -13,8 +12,7 @@
 
     <div class="col-auto">
       <q-input
-        @update:model-value="onChange"
-        v-model.number="input.height"
+        v-model.number="canvasInput.height"
         type="number"
         filled
         style="max-width: 200px"
@@ -24,8 +22,7 @@
 
     <div class="col-auto">
       <q-input
-        @update:model-value="onChange"
-        v-model.number="input.startZ"
+        v-model.number="canvasInput.startZ"
         type="number"
         filled
         style="max-width: 200px"
@@ -36,11 +33,13 @@
 </template>
 
 <script setup>
+import { storeToRefs } from "pinia";
 import { useInputStore } from "src/stores/input-store";
 
 const inputStore = useInputStore();
 
-const input = inputStore.canvasInput;
+//const { sceneWidth, sceneHeight, startZ } = storeToRefs(inputStore)
 
-const onChange = () => (inputStore.canvasInput = Object.assign({}, input));
+const { canvasInput } = storeToRefs(inputStore)
+
 </script>

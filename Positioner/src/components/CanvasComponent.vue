@@ -21,10 +21,10 @@ var canvasDimensions;
 
 var sceneRect;
 
-const setupCanvas = (input, _) => {
-  console.log("setup", input);
-
+const setupCanvas = () => {
   if (!canvas) return;
+
+  const input = inputStore.canvasInput
 
   const multiplier = getSceneMultiplier(canvasDimensions, {
     width: input.width,
@@ -62,7 +62,8 @@ watch(
   }
 );
 
-watch(() => inputStore.canvasInput, setupCanvas);
+inputStore.$subscribe(setupCanvas)
+
 
 onMounted(() => {
   canvasDimensions = {
@@ -76,6 +77,6 @@ onMounted(() => {
     backgroundColor: "gainsboro",
   });
 
-  setupCanvas(inputStore.canvasInput);
+  setupCanvas();
 });
 </script>
