@@ -26,6 +26,7 @@ var canvasDimensions;
 
 var sceneRect;
 
+
 const setupCanvas = () => {
   if (!canvas) return;
 
@@ -38,8 +39,8 @@ const setupCanvas = () => {
 
   canvasStore.dimensionsMultiplier = multiplier;
 
-  const width = input.width * multiplier;
-  const height = input.height * multiplier;
+  const width = canvasStore.getDimension(input.width);
+  const height = canvasStore.getDimension(input.height);
 
   if (sceneRect) canvas.remove(sceneRect);
 
@@ -59,26 +60,39 @@ const setupCanvas = () => {
 };
 
 watch(
-  () => inputStore.imageSrc,
-  (src) => {
-    if (!src || !canvas) return;
+  () => inputStore.image,
+  (inputImage) => {
+    if (!inputImage || !canvas) return;
 
-    fabric.Image.fromURL(src, (image) => {
+    fabric.Image.fromURL(inputImage.src, (image) => {
       canvas.add(image)
 
       image.on('moving', console.log)
       image.on('scaling', console.log)
-      imagesStore.images.push(image)
       console.log(image)
+      imagesStore.images.push({ name: inputImage.name, canvasId: image.cacheKey, width: canvasStore.getDimension(image.width), height: canvasStore.getDimension(image.height) })
+
+      console.log(canvas)
     });
 
 
   }
 );
 
+imagesStore.$subscribe(() => {
+  console.log('watch')
+  imagesStore.images.forEach(img => {
+    const imageOnCanvas = canvas._objects.find(obj => obj.cacheKey === img.canvasId)
+
+    imageOnCanvas.scaleY = canvasStore.getCanvasDimension(img.height) / imageOnCanvas.height
+    imageOnCanvas.scaleX = canvasStore.getCanvasDimension(img.width) / imageOnCanvas.width
+
+    canvas.requestRenderAll();
+  })
+})
+
 inputStore.$subscribe(setupCanvas)
 
-const imagesList = computed(() => canvas._objects)
 
 onMounted(() => {
   canvasDimensions = {

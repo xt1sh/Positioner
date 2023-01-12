@@ -2,6 +2,7 @@
   <q-file
     @update:model-value="onFileChange"
     filled
+    style="max-width: 200px"
     v-model="model"
     accept="image/*"
     label="Upload image"
@@ -21,6 +22,7 @@ const inputStore = useInputStore();
 const model = ref();
 
 const onFileChange = (file) => {
-  inputStore.imageSrc = URL.createObjectURL(file);
+  console.log(file)
+  inputStore.image = { name: file.name, src: URL.createObjectURL(file) }
 };
 </script>

@@ -35,6 +35,7 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useInputStore } from "src/stores/input-store";
+import { watch, watchEffect } from "vue";
 
 const inputStore = useInputStore();
 
