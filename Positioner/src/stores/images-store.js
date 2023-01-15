@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
 export const useImagesStore = defineStore("images", () => {
-  const images = ref([])
+  const images = reactive([])
 
   return { images };
 });

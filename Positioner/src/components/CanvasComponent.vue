@@ -26,7 +26,6 @@ var canvasDimensions;
 
 var sceneRect;
 
-
 const setupCanvas = () => {
   if (!canvas) return;
 
@@ -39,8 +38,8 @@ const setupCanvas = () => {
 
   canvasStore.dimensionsMultiplier = multiplier;
 
-  const width = canvasStore.getDimension(input.width);
-  const height = canvasStore.getDimension(input.height);
+  const width = canvasStore.getCanvasDimension(input.width);
+  const height = canvasStore.getCanvasDimension(input.height);
 
   if (sceneRect) canvas.remove(sceneRect);
 
@@ -67,29 +66,40 @@ watch(
     fabric.Image.fromURL(inputImage.src, (image) => {
       canvas.add(image)
 
-      image.on('moving', console.log)
-      image.on('scaling', console.log)
-      console.log(image)
-      imagesStore.images.push({ name: inputImage.name, canvasId: image.cacheKey, width: canvasStore.getDimension(image.width), height: canvasStore.getDimension(image.height) })
+      const storeImage = ref({
+        name: inputImage.name, canvasId: image.cacheKey, width: canvasStore.getFromCanvasDimension(image.width), height: canvasStore.getFromCanvasDimension(image.height),
+        bringForward: () => image.bringForward(false), sendBackwards: () => image.sendBackwards(false)
+      })
+      imagesStore.images.unshift(storeImage)
 
-      console.log(canvas)
+      image.on('moving', e => {
+        storeImage.value.x = canvasStore.getFromCanvasDimension(e.transform.target.left - sceneRect.left)
+        storeImage.value.y = canvasStore.getFromCanvasDimension(e.transform.target.top - sceneRect.top)
+      })
+      image.on('scaling', e => {
+        storeImage.value.width = canvasStore.getFromCanvasDimension(e.transform.target.width * e.transform.target.scaleX)
+        storeImage.value.height = canvasStore.getFromCanvasDimension(e.transform.target.height * e.transform.target.scaleY)
+      })
+
+      sceneRect.bringToFront()
     });
-
-
   }
 );
 
-imagesStore.$subscribe(() => {
-  console.log('watch')
-  imagesStore.images.forEach(img => {
-    const imageOnCanvas = canvas._objects.find(obj => obj.cacheKey === img.canvasId)
+// imagesStore.$subscribe(() => {
+//   console.log('watch')
+//   imagesStore.images.forEach(img => {
 
-    imageOnCanvas.scaleY = canvasStore.getCanvasDimension(img.height) / imageOnCanvas.height
-    imageOnCanvas.scaleX = canvasStore.getCanvasDimension(img.width) / imageOnCanvas.width
+//     console.log('imagesStore')
 
-    canvas.requestRenderAll();
-  })
-})
+//     const imageOnCanvas = canvas._objects.find(obj => obj.cacheKey === img.canvasId)
+
+//     imageOnCanvas.scaleY = canvasStore.getCanvasDimension(img.height) / imageOnCanvas.height
+//     imageOnCanvas.scaleX = canvasStore.getCanvasDimension(img.width) / imageOnCanvas.width
+
+//     canvas.requestRenderAll();
+//   })
+// })
 
 inputStore.$subscribe(setupCanvas)
 

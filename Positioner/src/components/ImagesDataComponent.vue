@@ -1,6 +1,6 @@
 <template>
-    <div v-for="image in images" :key="image.canvasId">
-      <ImageDataComponent :inputImage="image" @update:image="onImageUpdate" />
+    <div v-for="image in images" :key="image">
+      <ImageDataComponent :inputImage="image" />
     </div>
 </template>
 
@@ -8,16 +8,16 @@
 import { useImagesStore } from 'src/stores/images-store';
 import { storeToRefs } from 'pinia'
 import ImageDataComponent from './ImageDataComponent.vue';
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
 
 const imagesStore = useImagesStore()
-var images = imagesStore.images
+var images = computed(() => imagesStore.images)
 
-imagesStore.$subscribe(() => images = imagesStore.images)
+watch(images, console.log)
 
-const onImageUpdate = (data) => {
-  const index = imagesStore.images.findIndex(i => i.canvasId === data.canvasId)
-  imagesStore.images[index] = data
-}
+// const onImageUpdate = (data) => {
+//   const index = imagesStore.images.findIndex(i => i.canvasId === data.canvasId)
+//   imagesStore.images[index] = data
+// }
 
 </script>
