@@ -22,7 +22,7 @@
 
     <div class="col-auto">
       <q-input
-        v-model.number="canvasInput.startZ"
+        v-model.number="startPosition.z"
         type="number"
         filled
         style="max-width: 200px"
@@ -34,11 +34,14 @@
 
 <script setup>
 import { storeToRefs } from "pinia";
+import { useCameraStore } from "src/stores/camera-store";
 import { useInputStore } from "src/stores/input-store";
 import { watch, watchEffect } from "vue";
 
 const inputStore = useInputStore();
+const cameraStore = useCameraStore()
 
 const { canvasInput } = storeToRefs(inputStore)
+const { startPosition } = storeToRefs(cameraStore)
 
 </script>
